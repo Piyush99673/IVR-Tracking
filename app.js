@@ -1,7 +1,7 @@
 const express = require("express");
 const mongoose = require("./Backend/Config/database");
 const campaignRoutes = require("./Backend/Routes/campaignRoutes");
-// const customerResponseRoutes = require("./routes/customerResponseRoutes");
+const customerResponseRoutes = require("./Backend/Routes/customerResponseRoutes");
 
 const app = express();
 
