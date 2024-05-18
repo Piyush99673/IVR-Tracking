@@ -7,8 +7,8 @@ const app = express();
 
 app.use(express.json());
 
-// app.use("/campaigns", campaignRoutes);
-// app.use("/customer-responses", customerResponseRoutes);
+app.use("/campaigns", campaignRoutes);
+app.use("/customer-responses", customerResponseRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

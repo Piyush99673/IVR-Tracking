@@ -1,4 +1,4 @@
-// const Campaign = require("../Models/campaign");
+const Campaign = require("../Models/campaign");
 const CustomerResponse = require("../Models/customerResponse");
 
 exports.handleCustomerResponse = async (req, res) => {

@@ -1,8 +1,12 @@
-const Campaign = require("../models/campaign");
+const Campaign = require("../Models/campaign");
+const CustomerResponse = require("../Models/customerResponse");
 
 exports.createCampaign = async (req, res) => {
   try {
-    const { campaigns } = req.body;
+    const { campaigns, userId } = req.body;
+    if (!userId) {
+      return res.status(400).json({ error: "userId is required" });
+    }
     const createdCampaigns = await Promise.all(
       campaigns.map(async (campaign) => {
         const newCampaign = new Campaign({
@@ -15,7 +19,7 @@ exports.createCampaign = async (req, res) => {
             sendAt: new Date(campaign.schedule.send_at),
             endAt: new Date(campaign.schedule.end_at),
           },
-          user: req.user._id,
+          user: userId,
         });
         return await newCampaign.save();
       })
@@ -28,12 +32,13 @@ exports.createCampaign = async (req, res) => {
 
 exports.getCampaignStatus = async (req, res) => {
   try {
-    const campaign = await Campaign.findOne({ uid: req.params.uid }).populate(
-      "customerResponse"
-    );
+    const campaign = await CustomerResponse.findOne({
+      uid: req.params.uid,
+    }).populate("customerResponse");
     if (!campaign) {
       return res.status(404).json({ error: "Campaign not found" });
     }
+    console.log(campaign);
     res.status(200).json({
       uid: campaign.uid,
       customerStatus: campaign.customerResponse?.customerStatus,
