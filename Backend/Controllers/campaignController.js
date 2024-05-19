@@ -32,13 +32,15 @@ exports.createCampaign = async (req, res) => {
 
 exports.getCampaignStatus = async (req, res) => {
   try {
-    const campaign = await CustomerResponse.findOne({
-      uid: req.params.uid,
-    }).populate("customerResponse");
+    const campaign = await Campaign.findOne({ uid: req.params.uid }).populate({
+      path: "customerResponse",
+      strictPopulate: false,
+    });
+
     if (!campaign) {
       return res.status(404).json({ error: "Campaign not found" });
     }
-    console.log(campaign);
+
     res.status(200).json({
       uid: campaign.uid,
       customerStatus: campaign.customerResponse?.customerStatus,
