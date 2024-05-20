@@ -1,5 +1,5 @@
+const axios = require("axios");
 const Campaign = require("../Models/campaign");
-const CustomerResponse = require("../Models/customerResponse");
 
 exports.createCampaign = async (req, res) => {
   try {
@@ -7,6 +7,7 @@ exports.createCampaign = async (req, res) => {
     if (!userId) {
       return res.status(400).json({ error: "userId is required" });
     }
+
     const createdCampaigns = await Promise.all(
       campaigns.map(async (campaign) => {
         const newCampaign = new Campaign({
@@ -21,9 +22,21 @@ exports.createCampaign = async (req, res) => {
           },
           user: userId,
         });
-        return await newCampaign.save();
+
+        const ivrProviderResponse = await axios.post(
+          "https://ivr-jt.free.beeceptor.com",
+          {
+            campaigns: [newCampaign],
+          }
+        );
+
+        // Save the campaign to the database
+        const savedCampaign = await newCampaign.save();
+        console.log(ivrProviderResponse.data);
+        return savedCampaign;
       })
     );
+
     res.status(201).json(createdCampaigns);
   } catch (err) {
     res.status(400).json({ error: err.message });
